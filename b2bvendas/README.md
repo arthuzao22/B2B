@@ -1,36 +1,71 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# B2B Marketplace - Sistema E-Commerce Completo
 
-## Getting Started
+Sistema completo de e-commerce B2B (Business-to-Business) desenvolvido com Next.js 14+, seguindo as melhores práticas de arquitetura e segurança.
 
-First, run the development server:
+## 🚀 Stack Tecnológica
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+- **Frontend**: Next.js 16.1+ (App Router)
+- **Backend**: Next.js API Routes
+- **Database**: PostgreSQL com Prisma ORM 5.22
+- **Autenticação**: NextAuth.js com JWT
+- **Validação**: Zod
+- **Logging**: Winston
+- **Linguagem**: TypeScript (Strict Mode)
+
+## 📦 Estrutura do Projeto
+
+```
+/b2bvendas
+├── /app
+│   ├── /api                # API Routes (Controllers)
+│   │   ├── /auth           # Autenticação e registro
+│   │   └── /produtos       # CRUD de produtos
+│   ├── layout.tsx
+│   └── page.tsx
+├── /lib                    # Infraestrutura
+│   ├── /prisma            # Cliente Prisma
+│   ├── /auth              # NextAuth config e sessões
+│   ├── /logger            # Winston logging
+│   ├── /errors            # Classes de erro
+│   └── /utils             # Utilitários
+├── /modules               # Módulos de domínio (DDD)
+│   ├── /auth             # Autenticação
+│   └── /produtos         # Gestão de produtos
+├── /shared                # Código compartilhado
+│   ├── /types
+│   └── /schemas
+└── /prisma
+    └── schema.prisma      # Schema do banco de dados
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🏛️ Arquitetura
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+O sistema segue uma **Layered Architecture** com separação clara de responsabilidades.
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 🔐 Segurança
 
-## Learn More
+✅ **Autenticação**: NextAuth.js com JWT  
+✅ **Validação de Entrada**: Zod schemas  
+✅ **Multi-tenancy**: Filtro obrigatório por tenant  
+✅ **Hash de Senhas**: bcrypt com 12 salt rounds  
 
-To learn more about Next.js, take a look at the following resources:
+## 🔧 Instalação
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+```bash
+npm install
+cp .env.example .env
+npx prisma migrate dev
+npx prisma generate
+npm run dev
+```
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 📊 Status do Projeto
 
-## Deploy on Vercel
+**Fase 1 Concluída**: ✅  
+- ✅ Prisma Schema completo
+- ✅ Sistema de autenticação
+- ✅ Módulo de Produtos (CRUD)
+- ✅ Arquitetura em camadas
+- ✅ Build TypeScript com sucesso
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+**Próxima Fase**: Pedidos e Estoque
