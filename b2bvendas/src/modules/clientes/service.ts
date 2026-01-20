@@ -112,9 +112,12 @@ export class ClienteService extends BaseService {
       clienteId = existingCliente.id
     } else {
       // Create new cliente - need to create usuario first
+      // Note: If no email provided, a temporary email is used
+      // TODO: Implement proper email validation/verification flow
+      const tempEmail = data.email || `cliente-${cleanCnpj}@placeholder.b2b.local`
       const usuario = await this.createUsuario({
         nome: data.razaoSocial,
-        email: data.email || `${cleanCnpj}@temp.com`,
+        email: tempEmail,
       })
 
       const newCliente = await this.repository.create({
@@ -303,15 +306,17 @@ export class ClienteService extends BaseService {
 
   /**
    * Create usuario for cliente
+   * Note: Usuario is created with empty password. Cliente must activate account
+   * through a proper activation flow (send email with activation link)
    */
   private async createUsuario(data: { nome: string; email: string }) {
     return await this.repository.db.usuario.create({
       data: {
         nome: data.nome,
         email: data.email,
-        senha: '', // Will be set when cliente activates account
+        senha: '', // TODO: Implement proper account activation flow
         role: 'CLIENT',
-        ativo: true,
+        ativo: false, // Inactive until account is activated
       },
     })
   }
