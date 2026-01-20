@@ -9,6 +9,8 @@ declare module 'next-auth' {
       email: string
       nome: string
       role: Role
+      fornecedorId?: string
+      clienteId?: string
     }
   }
 
@@ -17,6 +19,8 @@ declare module 'next-auth' {
     email: string
     nome: string
     role: Role
+    fornecedorId?: string
+    clienteId?: string
   }
 }
 
@@ -26,5 +30,7 @@ declare module 'next-auth/jwt' {
     email: string
     nome: string
     role: Role
+    fornecedorId?: string
+    clienteId?: string
   }
 }
