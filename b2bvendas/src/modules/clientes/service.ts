@@ -99,13 +99,7 @@ export class ClienteService extends BaseService {
 
       if (existingAssociation && !existingAssociation.ativo) {
         // Reactivate existing association
-        await this.repository.prisma.clienteFornecedor.update({
-          where: { id: existingAssociation.id },
-          data: { 
-            ativo: true,
-            listaPrecoId: data.listaPrecoId,
-          },
-        })
+        await this.reactivateAssociation(existingAssociation.id, data.listaPrecoId)
       } else {
         // Create new association
         await this.repository.createAssociation(
@@ -118,14 +112,9 @@ export class ClienteService extends BaseService {
       clienteId = existingCliente.id
     } else {
       // Create new cliente - need to create usuario first
-      const usuario = await this.repository.prisma.usuario.create({
-        data: {
-          nome: data.razaoSocial,
-          email: data.email || `${cleanCnpj}@temp.com`,
-          senha: '', // Will be set when cliente activates account
-          role: 'CLIENT',
-          ativo: true,
-        },
+      const usuario = await this.createUsuario({
+        nome: data.razaoSocial,
+        email: data.email || `${cleanCnpj}@temp.com`,
       })
 
       const newCliente = await this.repository.create({
@@ -217,17 +206,7 @@ export class ClienteService extends BaseService {
     await this.findById(clienteId, fornecedorId)
 
     // Verify price list exists and belongs to fornecedor
-    const listaPreco = await this.repository.prisma.listaPreco.findFirst({
-      where: {
-        id: listaPrecoId,
-        fornecedorId,
-        ativo: true,
-      },
-    })
-
-    if (!listaPreco) {
-      throw new NotFoundError('Lista de preço não encontrada')
-    }
+    await this.verifyListaPreco(listaPrecoId, fornecedorId)
 
     const association = await this.repository.assignPriceList(
       clienteId,
@@ -320,5 +299,52 @@ export class ClienteService extends BaseService {
     const cleaned = this.validateAndCleanCnpj(cnpj)
     const existing = await this.repository.findByCnpj(cleaned, excludeId)
     return !existing
+  }
+
+  /**
+   * Create usuario for cliente
+   */
+  private async createUsuario(data: { nome: string; email: string }) {
+    return await this.repository.db.usuario.create({
+      data: {
+        nome: data.nome,
+        email: data.email,
+        senha: '', // Will be set when cliente activates account
+        role: 'CLIENT',
+        ativo: true,
+      },
+    })
+  }
+
+  /**
+   * Reactivate existing association
+   */
+  private async reactivateAssociation(associationId: string, listaPrecoId?: string | null) {
+    return await this.repository.db.clienteFornecedor.update({
+      where: { id: associationId },
+      data: { 
+        ativo: true,
+        listaPrecoId,
+      },
+    })
+  }
+
+  /**
+   * Verify lista preço exists and belongs to fornecedor
+   */
+  private async verifyListaPreco(listaPrecoId: string, fornecedorId: string) {
+    const listaPreco = await this.repository.db.listaPreco.findFirst({
+      where: {
+        id: listaPrecoId,
+        fornecedorId,
+        ativo: true,
+      },
+    })
+
+    if (!listaPreco) {
+      throw new NotFoundError('Lista de preço não encontrada')
+    }
+
+    return listaPreco
   }
 }

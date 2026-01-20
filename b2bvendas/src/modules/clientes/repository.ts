@@ -11,6 +11,11 @@ import {
 } from './types'
 
 export class ClienteRepository extends BaseRepository {
+  // Expose prisma for service layer access
+  public get db() {
+    return this.prisma
+  }
+
   /**
    * Find all clientes associated with a fornecedor
    */
