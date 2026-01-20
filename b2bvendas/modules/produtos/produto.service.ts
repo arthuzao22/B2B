@@ -21,7 +21,7 @@ export class ProdutoService {
     let contador = 1;
 
     while (true) {
-      const slugExiste = await produtoRepository.buscarPorId(slug, fornecedorId);
+      const slugExiste = await produtoRepository.buscarPorSlug(slug, fornecedorId);
       if (!slugExiste) break;
       slug = `${baseSlug}-${contador}`;
       contador++;
@@ -92,7 +92,7 @@ export class ProdutoService {
       let contador = 1;
 
       while (true) {
-        const slugExiste = await produtoRepository.buscarPorId(slug, fornecedorId);
+        const slugExiste = await produtoRepository.buscarPorSlug(slug, fornecedorId);
         if (!slugExiste || slugExiste.id === id) break;
         slug = `${baseSlug}-${contador}`;
         contador++;

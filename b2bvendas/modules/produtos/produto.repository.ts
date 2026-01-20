@@ -51,6 +51,17 @@ export class ProdutoRepository {
     });
   }
 
+  async buscarPorSlug(slug: string, fornecedorId: string) {
+    return prisma.produto.findUnique({
+      where: {
+        fornecedorId_slug: {
+          fornecedorId,
+          slug,
+        },
+      },
+    });
+  }
+
   async listar(
     fornecedorId: string,
     filtros: {
@@ -136,18 +147,22 @@ export class ProdutoRepository {
   }
 
   async buscarComEstoqueBaixo(fornecedorId: string) {
-    return prisma.produto.findMany({
-      where: {
-        fornecedorId,
-        ativo: true,
-        quantidadeEstoque: {
-          lte: prisma.produto.fields.estoqueMinimo,
-        },
-      },
-      orderBy: {
-        quantidadeEstoque: 'asc',
-      },
-    });
+    // Using raw SQL to compare two columns (quantidadeEstoque <= estoqueMinimo)
+    return prisma.$queryRaw<Array<{
+      id: string;
+      fornecedorId: string;
+      nome: string;
+      sku: string;
+      quantidadeEstoque: number;
+      estoqueMinimo: number;
+    }>>`
+      SELECT id, fornecedor_id as "fornecedorId", nome, sku, quantidade_estoque as "quantidadeEstoque", estoque_minimo as "estoqueMinimo"
+      FROM produtos
+      WHERE fornecedor_id = ${fornecedorId}
+        AND ativo = true
+        AND quantidade_estoque <= estoque_minimo
+      ORDER BY quantidade_estoque ASC
+    `;
   }
 }
 
