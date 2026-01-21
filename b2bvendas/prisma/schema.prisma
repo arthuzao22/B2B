@@ -56,6 +56,7 @@ model Usuario {
   fornecedor    Fornecedor?
   cliente       Cliente?
   notificacoes  Notificacao[]
+  auditLogs     AuditLog[]
   
   @@map("usuarios")
 }
@@ -418,4 +419,40 @@ model EmailLog {
   @@index([template])
   @@index([criadoEm])
   @@map("email_logs")
+}
+
+// ==========================================
+// MODELO: AuditLog
+// Registro de auditoria de ações do sistema
+// ==========================================
+model AuditLog {
+  id            String    @id @default(cuid())
+  userId        String?   @map("usuario_id")
+  user          Usuario?  @relation(fields: [userId], references: [id], onDelete: SetNull)
+  
+  // Ação e recurso
+  action        String    // AuditAction enum
+  resource      String    // AuditResource enum
+  resourceId    String?   @map("resource_id")
+  
+  // Informações de contexto
+  ip            String?
+  userAgent     String?   @map("user_agent") @db.Text
+  
+  // Detalhes adicionais
+  description   String?   @db.Text
+  metadata      Json      @default("{}")
+  severity      String    @default("INFO") // AuditSeverity enum
+  
+  // Timestamp
+  timestamp     DateTime  @default(now())
+  
+  @@index([userId])
+  @@index([action])
+  @@index([resource])
+  @@index([resourceId])
+  @@index([timestamp])
+  @@index([severity])
+  @@index([ip])
+  @@map("audit_logs")
 }

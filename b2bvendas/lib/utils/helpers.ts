@@ -61,3 +61,145 @@ export function getPaginationParams(searchParams: URLSearchParams) {
   
   return { pagina, limite, ordenarPor, ordem };
 }
+
+// ==========================================
+// Security Helper Functions
+// ==========================================
+
+/**
+ * Validate request origin
+ */
+export function validateRequestOrigin(
+  origin: string | null,
+  allowedOrigins: string[]
+): boolean {
+  if (!origin) return false;
+  
+  try {
+    const originUrl = new URL(origin);
+    return allowedOrigins.some(allowed => {
+      if (allowed === '*') return true;
+      if (allowed.startsWith('*.')) {
+        const domain = allowed.substring(2);
+        return originUrl.hostname.endsWith(domain);
+      }
+      return originUrl.origin === allowed;
+    });
+  } catch {
+    return false;
+  }
+}
+
+/**
+ * Sanitize HTML (basic version - see sanitizer.ts for full version)
+ */
+export function sanitizeHtml(html: string): string {
+  return html
+    .replace(/<script\b[^<]*(?:(?!<\/script>)<[^<]*)*<\/script>/gi, '')
+    .replace(/\son\w+\s*=\s*["'][^"']*["']/gi, '')
+    .replace(/href\s*=\s*["']?\s*javascript:/gi, 'href="#"')
+    .replace(/<(iframe|object|embed)[^>]*>.*?<\/\1>/gi, '');
+}
+
+/**
+ * Validate file type
+ */
+export function validateFileType(
+  filename: string,
+  allowedExtensions: string[]
+): boolean {
+  const extension = filename.substring(filename.lastIndexOf('.')).toLowerCase();
+  return allowedExtensions.includes(extension);
+}
+
+/**
+ * Generate secure random token
+ */
+export function generateSecureToken(length = 32): string {
+  const crypto = require('crypto');
+  return crypto.randomBytes(length).toString('base64url');
+}
+
+/**
+ * Hash sensitive data
+ */
+export function hashData(data: string): string {
+  const crypto = require('crypto');
+  return crypto.createHash('sha256').update(data).digest('hex');
+}
+
+/**
+ * Validate IP address format
+ */
+export function isValidIpAddress(ip: string): boolean {
+  const ipv4Regex = /^(\d{1,3}\.){3}\d{1,3}$/;
+  const ipv6Regex = /^([0-9a-fA-F]{1,4}:){7}[0-9a-fA-F]{1,4}$/;
+  
+  if (ipv4Regex.test(ip)) {
+    return ip.split('.').every(part => parseInt(part) <= 255);
+  }
+  
+  return ipv6Regex.test(ip);
+}
+
+/**
+ * Mask sensitive data for logs
+ */
+export function maskSensitiveData(data: string, visibleChars = 4): string {
+  if (data.length <= visibleChars) {
+    return '*'.repeat(data.length);
+  }
+  return data.substring(0, visibleChars) + '*'.repeat(data.length - visibleChars);
+}
+
+/**
+ * Check password strength
+ */
+export function checkPasswordStrength(password: string): {
+  score: number;
+  feedback: string[];
+} {
+  const feedback: string[] = [];
+  let score = 0;
+  
+  if (password.length >= 8) score++;
+  if (password.length >= 12) score++;
+  if (/[a-z]/.test(password)) score++;
+  if (/[A-Z]/.test(password)) score++;
+  if (/\d/.test(password)) score++;
+  if (/[^a-zA-Z0-9]/.test(password)) score++;
+  
+  if (password.length < 8) feedback.push('Use at least 8 characters');
+  if (!/[a-z]/.test(password)) feedback.push('Add lowercase letters');
+  if (!/[A-Z]/.test(password)) feedback.push('Add uppercase letters');
+  if (!/\d/.test(password)) feedback.push('Add numbers');
+  if (!/[^a-zA-Z0-9]/.test(password)) feedback.push('Add special characters');
+  
+  return { score, feedback };
+}
+
+/**
+ * Generate CSRF-safe form token
+ */
+export function generateFormToken(): string {
+  return generateSecureToken(32);
+}
+
+/**
+ * Verify token timing-safe
+ */
+export function verifyToken(token1: string, token2: string): boolean {
+  if (!token1 || !token2 || token1.length !== token2.length) {
+    return false;
+  }
+  
+  const crypto = require('crypto');
+  try {
+    return crypto.timingSafeEqual(
+      Buffer.from(token1),
+      Buffer.from(token2)
+    );
+  } catch {
+    return false;
+  }
+}
