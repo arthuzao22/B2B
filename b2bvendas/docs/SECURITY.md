@@ -211,8 +211,9 @@ X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy: camera=(), microphone=(), geolocation=()
-X-XSS-Protection: 1; mode=block
 ```
+
+**Note**: X-XSS-Protection header is deprecated and disabled by default as it can introduce vulnerabilities. Modern browsers use CSP instead.
 
 ### Usage
 

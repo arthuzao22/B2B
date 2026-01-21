@@ -150,8 +150,9 @@ X-Frame-Options: SAMEORIGIN
 X-Content-Type-Options: nosniff
 Referrer-Policy: strict-origin-when-cross-origin
 Permissions-Policy
-X-XSS-Protection: 1; mode=block
 ```
+
+**Note**: X-XSS-Protection header is deprecated and disabled by default.
 
 ---
 

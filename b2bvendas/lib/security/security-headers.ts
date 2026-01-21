@@ -117,8 +117,10 @@ export function applySecurityHeaders(
     'camera=(), microphone=(), geolocation=(), interest-cohort=()';
   response.headers.set('Permissions-Policy', permissionsPolicy);
   
-  // X-XSS-Protection (Legacy browsers)
-  if (config.xssProtection !== false) {
+  // X-XSS-Protection (Legacy browsers - deprecated, use CSP instead)
+  // Note: This header is deprecated and can introduce vulnerabilities in older browsers
+  // It's disabled by default. Modern browsers use CSP instead.
+  if (config.xssProtection === true) {
     response.headers.set('X-XSS-Protection', '1; mode=block');
   }
   
@@ -229,7 +231,7 @@ export const SECURITY_PRESETS = {
     xContentTypeOptions: true,
     referrerPolicy: 'no-referrer',
     permissionsPolicy: 'camera=(), microphone=(), geolocation=(), payment=(), usb=()',
-    xssProtection: true,
+    xssProtection: false, // Deprecated, CSP is used instead
     expectCT: true,
   },
   moderate: {
@@ -238,7 +240,7 @@ export const SECURITY_PRESETS = {
     xFrameOptions: 'SAMEORIGIN',
     xContentTypeOptions: true,
     referrerPolicy: 'strict-origin-when-cross-origin',
-    xssProtection: true,
+    xssProtection: false, // Deprecated, CSP is used instead
     expectCT: false,
   },
   relaxed: {
@@ -247,7 +249,7 @@ export const SECURITY_PRESETS = {
     xFrameOptions: 'SAMEORIGIN',
     xContentTypeOptions: true,
     referrerPolicy: 'no-referrer-when-downgrade',
-    xssProtection: true,
+    xssProtection: false, // Deprecated, CSP is used instead
     expectCT: false,
   },
 } as const;
