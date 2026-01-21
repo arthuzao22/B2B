@@ -1,29 +1,32 @@
 /**
  * Rate Limiter Middleware
  * 
- * Implements rate limiting using Redis with sliding window algorithm
- * Supports per-IP, per-user, and per-endpoint rate limiting
+ * Implementação in-memory (Map) para rate limiting
+ * Usando sliding window algorithm simples
+ * 
+ * ⚠️ IMPORTANTE: Em produção, usar Redis para suportar múltiplas instâncias
  */
 
 import { NextRequest, NextResponse } from 'next/server';
-import Redis from 'ioredis';
 
-// Redis client configuration
-const redis = new Redis(process.env.REDIS_URL || 'redis://localhost:6379', {
-  maxRetriesPerRequest: 3,
-  enableReadyCheck: true,
-  lazyConnect: true,
-});
+// Store in-memory: Map<key, { count: number, resetAt: number }>
+const rateLimitStore = new Map<string, { count: number; resetAt: number }>();
 
-redis.on('error', (err) => {
-  console.error('Redis connection error:', err);
-});
+// Cleanup expired entries every 1 minute
+setInterval(() => {
+  const now = Date.now();
+  for (const [key, value] of rateLimitStore.entries()) {
+    if (value.resetAt < now) {
+      rateLimitStore.delete(key);
+    }
+  }
+}, 60000);
 
 // Rate limit configuration types
 export interface RateLimitConfig {
   windowMs: number;       // Time window in milliseconds
   max: number;            // Maximum requests per window
-  keyPrefix?: string;     // Prefix for Redis keys
+  keyPrefix?: string;     // Prefix for keys
   skipSuccessfulRequests?: boolean;
   skipFailedRequests?: boolean;
   handler?: (req: NextRequest) => NextResponse;
@@ -65,48 +68,34 @@ function generateKey(prefix: string, identifier: string): string {
 }
 
 /**
- * Sliding window rate limiter implementation
+ * Sliding window rate limiter implementation (in-memory)
  */
 async function checkRateLimit(
   key: string,
   config: RateLimitConfig
 ): Promise<{ allowed: boolean; remaining: number; resetAt: number }> {
   const now = Date.now();
-  const windowStart = now - config.windowMs;
   
   try {
-    // Use Redis sorted set for sliding window
-    const multi = redis.multi();
+    const record = rateLimitStore.get(key);
     
-    // Remove old entries outside the window
-    multi.zremrangebyscore(key, 0, windowStart);
-    
-    // Count current requests in window
-    multi.zcard(key);
-    
-    // Add current request with timestamp as score
-    multi.zadd(key, now, `${now}-${Math.random()}`);
-    
-    // Set expiry on the key
-    multi.expire(key, Math.ceil(config.windowMs / 1000));
-    
-    const results = await multi.exec();
-    
-    if (!results) {
-      throw new Error('Redis transaction failed');
+    // Se não existe ou expirou, criar novo
+    if (!record || record.resetAt < now) {
+      const resetAt = now + config.windowMs;
+      rateLimitStore.set(key, { count: 1, resetAt });
+      return { allowed: true, remaining: config.max - 1, resetAt };
     }
     
-    // Get count before adding current request
-    const count = results[1][1] as number;
+    // Incrementar contador
+    record.count += 1;
     
-    const allowed = count < config.max;
-    const remaining = Math.max(0, config.max - count - 1);
-    const resetAt = now + config.windowMs;
+    const allowed = record.count <= config.max;
+    const remaining = Math.max(0, config.max - record.count);
     
-    return { allowed, remaining, resetAt };
+    return { allowed, remaining, resetAt: record.resetAt };
   } catch (error) {
     console.error('Rate limit check error:', error);
-    // Fail open - allow request if Redis is down
+    // Fail open - allow request if error
     return { allowed: true, remaining: config.max, resetAt: now + config.windowMs };
   }
 }
