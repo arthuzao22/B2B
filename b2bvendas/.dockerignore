@@ -1,0 +1,56 @@
+# Dependencies
+node_modules
+npm-debug.log
+yarn-error.log
+package-lock.json
+yarn.lock
+pnpm-lock.yaml
+
+# Next.js
+.next/
+out/
+build
+dist
+
+# Testing
+coverage
+.nyc_output
+
+# Environment files
+.env
+.env*.local
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+
+# IDE
+.idea
+.vscode
+*.swp
+*.swo
+*~
+.DS_Store
+
+# Logs
+logs
+*.log
+
+# Git
+.git
+.gitignore
+.gitattributes
+.github
+
+# Documentation
+README.md
+*.md
+docs/
+
+# Misc
+.editorconfig
+.eslintrc
+.prettierrc
+Dockerfile
+docker-compose.yml
+.dockerignore
