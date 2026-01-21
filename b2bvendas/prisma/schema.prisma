@@ -365,3 +365,57 @@ model Notificacao {
   
   @@map("notificacoes")
 }
+
+// ==========================================
+// ENUM: EmailStatus
+// Status de envio de emails
+// ==========================================
+enum EmailStatus {
+  pending     // Aguardando envio
+  sent        // Enviado com sucesso
+  failed      // Falha no envio
+  bounced     // Email devolvido
+  delivered   // Entregue ao destinatário
+  opened      // Email aberto
+  clicked     // Link clicado
+}
+
+// ==========================================
+// MODELO: EmailLog
+// Registro de emails enviados
+// ==========================================
+model EmailLog {
+  id              String      @id @default(cuid())
+  to              String      // Destinatário
+  from            String      // Remetente
+  subject         String      // Assunto
+  template        String      // Nome do template usado
+  status          EmailStatus @default(pending)
+  
+  // Dados do email
+  htmlContent     String?     @map("html_content") @db.Text
+  textContent     String?     @map("text_content") @db.Text
+  templateData    Json?       @map("template_data")
+  
+  // Rastreamento
+  externalId      String?     @unique @map("external_id") // ID do provedor (Resend, etc)
+  errorMessage    String?     @map("error_message") @db.Text
+  attempts        Int         @default(0)
+  lastAttemptAt   DateTime?   @map("last_attempt_at")
+  sentAt          DateTime?   @map("sent_at")
+  deliveredAt     DateTime?   @map("delivered_at")
+  openedAt        DateTime?   @map("opened_at")
+  
+  // Metadados
+  metadata        Json?
+  tags            String[]
+  
+  criadoEm        DateTime    @default(now()) @map("criado_em")
+  atualizadoEm    DateTime    @updatedAt @map("atualizado_em")
+  
+  @@index([to])
+  @@index([status])
+  @@index([template])
+  @@index([criadoEm])
+  @@map("email_logs")
+}
