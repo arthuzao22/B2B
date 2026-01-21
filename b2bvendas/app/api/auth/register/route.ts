@@ -2,13 +2,13 @@ import { NextRequest, NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
 import { prisma } from '@/src/lib/prisma'
-import { Role } from '@prisma/client'
+import { TipoUsuario } from '@prisma/client'
 
 const registerSchema = z.object({
   nome: z.string().min(1, 'Nome é obrigatório'),
   email: z.string().email('Email inválido'),
   senha: z.string().min(6, 'Senha deve ter no mínimo 6 caracteres'),
-  role: z.enum(['CLIENT', 'FORNECEDOR', 'ADMIN'])
+  tipo: z.enum(['admin', 'fornecedor', 'cliente'])
 })
 
 export async function POST(request: NextRequest) {
@@ -24,7 +24,7 @@ export async function POST(request: NextRequest) {
       )
     }
 
-    const { nome, email, senha, role } = validation.data
+    const { nome, email, senha, tipo } = validation.data
 
     // Check if email already exists
     const existingUser = await prisma.usuario.findUnique({
@@ -49,12 +49,12 @@ export async function POST(request: NextRequest) {
           nome,
           email,
           senha: senhaHash,
-          role: role as Role
+          tipo: tipo as TipoUsuario
         }
       })
 
-      // Create Fornecedor if role is FORNECEDOR
-      if (role === 'FORNECEDOR') {
+      // Create Fornecedor if tipo is fornecedor
+      if (tipo === 'fornecedor') {
         const nomeFantasia = nome
         const razaoSocial = nome
         const cnpj = `TEMP-${newUsuario.id.substring(0, 8)}-${Date.now()}`
@@ -66,14 +66,13 @@ export async function POST(request: NextRequest) {
             razaoSocial,
             nomeFantasia,
             cnpj,
-            slug,
-            email
+            slug
           }
         })
       }
 
-      // Create Cliente if role is CLIENT
-      if (role === 'CLIENT') {
+      // Create Cliente if tipo is cliente
+      if (tipo === 'cliente') {
         const razaoSocial = nome
         const cnpj = `TEMP-${newUsuario.id.substring(0, 8)}-${Date.now()}`
 
@@ -81,8 +80,7 @@ export async function POST(request: NextRequest) {
           data: {
             usuarioId: newUsuario.id,
             razaoSocial,
-            cnpj,
-            email
+            cnpj
           }
         })
       }
@@ -97,7 +95,7 @@ export async function POST(request: NextRequest) {
           id: usuario.id,
           nome: usuario.nome,
           email: usuario.email,
-          role: usuario.role
+          tipo: usuario.tipo
         }
       },
       { status: 201 }
