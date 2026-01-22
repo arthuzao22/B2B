@@ -112,9 +112,9 @@ export function sanitizeObject<T extends Record<string, any>>(obj: T): T {
   
   for (const key in sanitized) {
     if (typeof sanitized[key] === 'string') {
-      sanitized[key] = escapeHtml(sanitized[key]);
+      (sanitized[key] as any) = escapeHtml(sanitized[key]);
     } else if (typeof sanitized[key] === 'object' && sanitized[key] !== null) {
-      sanitized[key] = sanitizeObject(sanitized[key]);
+      (sanitized[key] as any) = sanitizeObject(sanitized[key]);
     }
   }
   

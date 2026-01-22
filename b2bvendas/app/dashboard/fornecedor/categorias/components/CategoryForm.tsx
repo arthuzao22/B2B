@@ -25,8 +25,6 @@ export function CategoryForm({
     descricao: initialData?.descricao || '',
     imagem: initialData?.imagem || '',
     categoriaPaiId: parentId || initialData?.categoriaPaiId || '',
-    ativo: initialData?.ativo !== undefined ? initialData.ativo : true,
-    ordem: initialData?.ordem || 0,
   })
 
   const [errors, setErrors] = useState<Record<string, string>>({})
@@ -175,38 +173,6 @@ export function CategoryForm({
           placeholder="https://exemplo.com/imagem.jpg"
           disabled={isLoading}
         />
-      </div>
-
-      <div className="grid grid-cols-2 gap-4">
-        <div>
-          <label htmlFor="ordem" className="block text-sm font-medium text-gray-700 mb-1">
-            Ordem
-          </label>
-          <input
-            type="number"
-            id="ordem"
-            name="ordem"
-            value={formData.ordem}
-            onChange={handleChange}
-            min="0"
-            className="w-full px-3 py-2 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent"
-            disabled={isLoading}
-          />
-        </div>
-
-        <div className="flex items-end">
-          <label className="flex items-center space-x-2">
-            <input
-              type="checkbox"
-              name="ativo"
-              checked={formData.ativo}
-              onChange={handleChange}
-              className="w-4 h-4 text-blue-600 border-gray-300 rounded focus:ring-blue-500"
-              disabled={isLoading}
-            />
-            <span className="text-sm font-medium text-gray-700">Categoria ativa</span>
-          </label>
-        </div>
       </div>
 
       <div className="flex justify-end gap-3 pt-4 border-t">

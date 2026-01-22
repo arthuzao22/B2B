@@ -57,17 +57,14 @@ export async function GET(request: NextRequest) {
   // Check Redis Connection (if REDIS_URL is configured)
   if (process.env.REDIS_URL) {
     try {
-      // Dynamic import to avoid errors if redis is not installed
-      const { createClient } = await import('redis').catch(() => ({ createClient: null }));
+      // Dynamic import to avoid errors if ioredis is not installed
+      const IORedis = (await import('ioredis').catch(() => ({ default: null }))).default;
       
-      if (createClient) {
-        const redisClient = createClient({
-          url: process.env.REDIS_URL,
-        });
-
-        await redisClient.connect();
+      if (IORedis) {
+        const redisClient = new IORedis(process.env.REDIS_URL);
+        
         await redisClient.ping();
-        await redisClient.disconnect();
+        await redisClient.quit();
 
         healthStatus.checks.redis = {
           status: 'ok',

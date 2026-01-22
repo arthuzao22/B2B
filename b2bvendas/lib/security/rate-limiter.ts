@@ -223,7 +223,7 @@ export async function rateLimiter(
  */
 export async function resetRateLimit(prefix: string, identifier: string): Promise<void> {
   const key = generateKey(prefix, identifier);
-  await redis.del(key);
+  rateLimitStore.delete(key);
 }
 
 /**
@@ -236,21 +236,15 @@ export async function getRateLimitStatus(
 ): Promise<{ count: number; resetAt: number }> {
   const key = generateKey(prefix, identifier);
   const now = Date.now();
-  const windowStart = now - windowMs;
   
-  try {
-    await redis.zremrangebyscore(key, 0, windowStart);
-    const count = await redis.zcard(key);
-    
-    return {
-      count,
-      resetAt: now + windowMs
-    };
-  } catch (error) {
-    console.error('Get rate limit status error:', error);
+  const entry = rateLimitStore.get(key);
+  
+  if (!entry || entry.resetAt < now) {
     return { count: 0, resetAt: now + windowMs };
   }
+  
+  return {
+    count: entry.count,
+    resetAt: entry.resetAt
+  };
 }
-
-// Export Redis client for other uses
-export { redis };

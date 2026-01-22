@@ -49,11 +49,7 @@ export function CategoryTree({
         return (
           <div key={category.id} className="mb-2">
             <div
-              className={`
-                flex items-center justify-between p-3 rounded-lg
-                hover:bg-gray-50 border border-gray-200
-                ${!category.ativo ? 'opacity-50' : ''}
-              `}
+              className="flex items-center justify-between p-3 rounded-lg hover:bg-gray-50 border border-gray-200"
             >
               <div className="flex items-center flex-1 gap-3">
                 {hasChildren ? (
@@ -76,11 +72,6 @@ export function CategoryTree({
                   <div>
                     <div className="flex items-center gap-2">
                       <span className="font-medium">{category.nome}</span>
-                      {!category.ativo && (
-                        <span className="px-2 py-0.5 text-xs rounded-full bg-gray-200 text-gray-600">
-                          Inativa
-                        </span>
-                      )}
                     </div>
                     {category.descricao && (
                       <p className="text-sm text-gray-500 mt-1">{category.descricao}</p>

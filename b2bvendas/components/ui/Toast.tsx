@@ -32,7 +32,7 @@ export const useToast = () => {
 
 export interface ToastProviderProps {
   children: React.ReactNode;
-  swipeDirection?: ToastPrimitive.SwipeDirection;
+  swipeDirection?: 'up' | 'down' | 'left' | 'right';
 }
 
 export const ToastProvider: React.FC<ToastProviderProps> = ({ 

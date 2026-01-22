@@ -14,7 +14,7 @@ export function buildCategoryTree(
       ...cat,
       subcategorias: buildCategoryTree(categories, cat.id),
     }))
-    .sort((a, b) => a.ordem - b.ordem)
+    .sort((a, b) => a.nome.localeCompare(b.nome))
 }
 
 /**

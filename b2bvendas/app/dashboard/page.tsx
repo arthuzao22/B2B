@@ -57,7 +57,7 @@ export default function DashboardPage() {
                 <p className="text-gray-700">
                   <span className="font-medium">Role:</span>{' '}
                   <span className="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-blue-100 text-blue-800">
-                    {session.user.role}
+                    {session.user.tipo}
                   </span>
                 </p>
                 <p className="text-gray-700">
@@ -69,13 +69,13 @@ export default function DashboardPage() {
             <div>
               <h2 className="text-xl font-semibold mb-2">Acesso Permitido</h2>
               <div className="space-y-2">
-                {session.user.role === 'ADMIN' && (
+                {session.user.tipo === 'admin' && (
                   <p className="text-green-600">✓ Acesso total ao sistema</p>
                 )}
-                {session.user.role === 'FORNECEDOR' && (
+                {session.user.tipo === 'fornecedor' && (
                   <p className="text-green-600">✓ Acesso ao painel de fornecedor</p>
                 )}
-                {session.user.role === 'CLIENT' && (
+                {session.user.tipo === 'cliente' && (
                   <p className="text-green-600">✓ Acesso ao painel de cliente</p>
                 )}
               </div>

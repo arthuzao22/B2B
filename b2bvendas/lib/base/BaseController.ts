@@ -1,7 +1,7 @@
 import { NextResponse } from 'next/server'
 import { AppError, ValidationError, UnauthorizedError, ForbiddenError, NotFoundError } from '../errors'
 import { ZodError } from 'zod'
-import logger from '../logger'
+import { logger } from '../logger'
 
 export abstract class BaseController {
   protected handleError(error: unknown): NextResponse {

@@ -12,10 +12,7 @@ interface CategoryCardProps {
 export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) {
   return (
     <div
-      className={`
-        p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow
-        ${!category.ativo ? 'opacity-60 bg-gray-50' : 'bg-white'}
-      `}
+      className="p-4 border border-gray-200 rounded-lg hover:shadow-md transition-shadow bg-white"
     >
       <div className="flex items-start justify-between mb-2">
         <div className="flex items-start gap-3 flex-1">
@@ -24,11 +21,6 @@ export function CategoryCard({ category, onEdit, onDelete }: CategoryCardProps) 
           <div className="flex-1">
             <div className="flex items-center gap-2 mb-1">
               <h3 className="text-lg font-semibold">{category.nome}</h3>
-              {!category.ativo && (
-                <span className="px-2 py-0.5 text-xs rounded-full bg-gray-300 text-gray-700">
-                  Inativa
-                </span>
-              )}
             </div>
             
             {category.descricao && (

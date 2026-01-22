@@ -19,7 +19,7 @@ const sendEmailSchema = z.object({
     'custom',
   ]),
   to: z.string().email(),
-  data: z.record(z.any()).optional(),
+  data: z.record(z.string(), z.any()).optional(),
   useQueue: z.boolean().optional().default(true),
 });
 
@@ -29,7 +29,7 @@ const customEmailSchema = z.object({
   html: z.string().optional(),
   text: z.string().optional(),
   template: z.string().optional(),
-  templateData: z.record(z.any()).optional(),
+  templateData: z.record(z.string(), z.any()).optional(),
   useQueue: z.boolean().optional().default(true),
 });
 
@@ -61,7 +61,7 @@ export async function POST(request: NextRequest) {
 
       const result = await emailService.sendEmail(
         {
-          to,
+          to: to as any,
           subject,
           html,
           text,

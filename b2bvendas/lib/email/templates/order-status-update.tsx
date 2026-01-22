@@ -57,7 +57,7 @@ export const OrderStatusUpdateEmail: React.FC<OrderStatusUpdateEmailProps> = ({
       {trackingCode && (
         <Section style={trackingBox}>
           <Text style={trackingLabel}>Código de Rastreamento:</Text>
-          <Text style={trackingCode}>{trackingCode}</Text>
+          <Text style={trackingCodeStyle}>{trackingCode}</Text>
         </Section>
       )}
 
@@ -156,7 +156,7 @@ const trackingLabel = {
   margin: '0 0 8px',
 };
 
-const trackingCode = {
+const trackingCodeStyle = {
   color: '#15803d',
   fontSize: '20px',
   fontWeight: '700',

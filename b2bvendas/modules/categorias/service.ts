@@ -177,20 +177,6 @@ export class CategoriaService extends BaseService {
   }
 
   /**
-   * Soft delete category (deactivate)
-   */
-  async softDelete(id: string, fornecedorId: string): Promise<Categoria> {
-    this.logger.info('Soft deleting category', { id, fornecedorId })
-
-    const existing = await this.repository.findById(id, fornecedorId)
-    if (!existing) {
-      throw new Error('Categoria não encontrada')
-    }
-
-    return this.repository.softDelete(id, fornecedorId)
-  }
-
-  /**
    * Move category to new parent
    */
   async moveCategory(id: string, newParentId: string | null, fornecedorId: string): Promise<Categoria> {
@@ -216,20 +202,6 @@ export class CategoriaService extends BaseService {
     }
 
     return this.repository.moveCategory(id, newParentId, fornecedorId)
-  }
-
-  /**
-   * Update category order
-   */
-  async updateOrder(id: string, ordem: number, fornecedorId: string): Promise<Categoria> {
-    this.logger.info('Updating category order', { id, ordem, fornecedorId })
-
-    const existing = await this.repository.findById(id, fornecedorId)
-    if (!existing) {
-      throw new Error('Categoria não encontrada')
-    }
-
-    return this.repository.updateOrder(id, ordem, fornecedorId)
   }
 
   /**

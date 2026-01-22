@@ -60,7 +60,7 @@ function buildCSP(policy: typeof DEFAULT_CSP): string {
 function getDefaultCSP(): string {
   const isDevelopment = process.env.NODE_ENV === 'development';
   
-  const csp = { ...DEFAULT_CSP };
+  const csp: any = { ...DEFAULT_CSP };
   
   if (isDevelopment) {
     // Relaxed CSP for development

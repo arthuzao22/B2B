@@ -5,6 +5,7 @@
  */
 
 import { emailService } from '@/modules/email';
+import { prisma } from '@/lib/prisma';
 
 // ==========================================
 // 1. WELCOME EMAIL
@@ -357,12 +358,10 @@ export async function onOrderStatusChanged(
 // Example: Check stock and send alert if low
 export async function checkStockAndAlert(fornecedorId: string) {
   // This would be run periodically (e.g., daily cron job)
+  // Get all products for the supplier
   const produtos = await prisma.produto.findMany({
     where: {
       fornecedorId,
-      quantidadeEstoque: {
-        lte: prisma.raw('estoque_minimo'),
-      },
     },
     include: {
       fornecedor: {
@@ -373,11 +372,16 @@ export async function checkStockAndAlert(fornecedorId: string) {
     },
   });
 
-  if (produtos.length > 0) {
+  // Filter products where stock is below minimum
+  const lowStockProducts = produtos.filter(
+    p => p.quantidadeEstoque <= p.estoqueMinimo
+  );
+
+  if (lowStockProducts.length > 0) {
     await emailService.sendLowStockAlertEmail(
       {
-        supplierName: produtos[0].fornecedor.nomeFantasia || produtos[0].fornecedor.razaoSocial,
-        products: produtos.map((p) => ({
+        supplierName: lowStockProducts[0].fornecedor.nomeFantasia || lowStockProducts[0].fornecedor.razaoSocial,
+        products: lowStockProducts.map((p) => ({
           name: p.nome,
           sku: p.sku,
           currentStock: p.quantidadeEstoque,
@@ -385,7 +389,7 @@ export async function checkStockAndAlert(fornecedorId: string) {
         })),
         dashboardLink: 'https://b2bvendas.com/dashboard/inventory',
       },
-      produtos[0].fornecedor.usuario.email
+      lowStockProducts[0].fornecedor.usuario.email
     );
   }
 }

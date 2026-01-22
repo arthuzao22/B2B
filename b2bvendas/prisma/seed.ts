@@ -7,14 +7,14 @@
  * Senha padrão para todos: "Senha@123"
  */
 
-import { PrismaClient, TipoUsuario } from '@prisma/client';
-import { Pool } from '@neondatabase/serverless';
-import { PrismaNeon } from '@prisma/adapter-neon';
+import { PrismaClient, TipoUsuario, TipoMovimentacao } from '@prisma/client';
+import { Pool } from 'pg';
+import { PrismaPg } from '@prisma/adapter-pg';
 import bcrypt from 'bcryptjs';
 
-// Initialize Prisma Client with Neon adapter
+// Initialize Prisma Client with PostgreSQL adapter
 const pool = new Pool({ connectionString: process.env.DATABASE_URL });
-const adapter = new PrismaNeon(pool);
+const adapter = new PrismaPg(pool);
 const prisma = new PrismaClient({ adapter });
 
 // Senha padrão (já em hash): "Senha@123"
@@ -393,7 +393,9 @@ async function main() {
       fornecedorId: fornecedor1.id,
       nome: 'Clientes VIP',
       descricao: 'Preços especiais para clientes VIP com desconto de 10%',
-      ativa: true,
+      tipoDesconto: 'percentual',
+      valorDesconto: 10,
+      ativo: true,
     },
   });
 
@@ -403,17 +405,17 @@ async function main() {
       {
         listaPrecoId: listaVIP.id,
         produtoId: produto1.id,
-        precoUnitario: 3149.10, // 10% desconto
+        precoEspecial: 3149.10, // 10% desconto
       },
       {
         listaPrecoId: listaVIP.id,
         produtoId: produto2.id,
-        precoUnitario: 449.91, // 10% desconto
+        precoEspecial: 449.91, // 10% desconto
       },
       {
         listaPrecoId: listaVIP.id,
         produtoId: produto3.id,
-        precoUnitario: 3869.10, // 10% desconto
+        precoEspecial: 3869.10, // 10% desconto
       },
     ],
   });
@@ -434,19 +436,19 @@ async function main() {
       subtotal: 4998.90,
       desconto: 0,
       total: 4998.90,
-      itensPedido: {
+      itens: {
         create: [
           {
             produtoId: produto1.id,
             quantidade: 1,
             precoUnitario: 3499.00,
-            subtotal: 3499.00,
+            precoTotal: 3499.00,
           },
           {
             produtoId: produto2.id,
             quantidade: 3,
             precoUnitario: 499.90,
-            subtotal: 1499.70,
+            precoTotal: 1499.70,
           },
         ],
       },
@@ -462,25 +464,25 @@ async function main() {
       subtotal: 166.40,
       desconto: 0,
       total: 166.40,
-      itensPedido: {
+      itens: {
         create: [
           {
             produtoId: produto4.id,
             quantidade: 4,
             precoUnitario: 24.90,
-            subtotal: 99.60,
+            precoTotal: 99.60,
           },
           {
             produtoId: produto5.id,
             quantidade: 5,
             precoUnitario: 8.50,
-            subtotal: 42.50,
+            precoTotal: 42.50,
           },
           {
             produtoId: produto6.id,
             quantidade: 1,
             precoUnitario: 42.00,
-            subtotal: 42.00,
+            precoTotal: 42.00,
           },
         ],
       },
