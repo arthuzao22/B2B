@@ -7,6 +7,20 @@ import Link from 'next/link'
 import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card'
 import { Input } from '@/components/ui/Input'
 import { Button } from '@/components/ui/Button'
+import type { TipoUsuario } from '@prisma/client'
+
+function getRedirectPath(tipo: TipoUsuario): string {
+  switch (tipo) {
+    case 'admin':
+      return '/dashboard/admin'
+    case 'fornecedor':
+      return '/dashboard/fornecedor'
+    case 'cliente':
+      return '/dashboard/cliente'
+    default:
+      return '/dashboard'
+  }
+}
 
 function LoginForm() {
   const router = useRouter()
@@ -24,26 +38,9 @@ function LoginForm() {
     }
   }, [searchParams])
 
-  // Redirect based on user type after login
   useEffect(() => {
     if (status === 'authenticated' && session?.user?.tipo) {
-      const tipo = session.user.tipo
-      let redirectPath = '/dashboard'
-      
-      switch (tipo) {
-        case 'admin':
-          redirectPath = '/dashboard/admin'
-          break
-        case 'fornecedor':
-          redirectPath = '/dashboard/fornecedor'
-          break
-        case 'cliente':
-          redirectPath = '/dashboard/cliente'
-          break
-        default:
-          redirectPath = '/dashboard'
-      }
-      
+      const redirectPath = getRedirectPath(session.user.tipo)
       router.push(redirectPath)
       router.refresh()
     }
@@ -65,9 +62,6 @@ function LoginForm() {
       if (result?.error) {
         setError(result.error)
         setLoading(false)
-      } else if (result?.ok) {
-        // Don't set loading to false here, let the useEffect handle redirect
-        // The loading state will be shown while redirecting
       }
     } catch (err) {
       setError('Erro ao fazer login. Tente novamente.')
