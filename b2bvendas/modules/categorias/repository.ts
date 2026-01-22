@@ -1,4 +1,4 @@
-import { BaseRepository } from '@/src/lib/base'
+import { BaseRepository } from '@/lib/base'
 import { Categoria } from '@prisma/client'
 import { CategoriaCreateInput, CategoriaUpdateInput, CategoriaWithCount } from './types'
 

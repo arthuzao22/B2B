@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server'
 import { hash } from 'bcryptjs'
 import { z } from 'zod'
-import { prisma } from '@/src/lib/prisma'
+import { prisma } from '@/lib/prisma/client'
 import { TipoUsuario } from '@prisma/client'
 
 const registerSchema = z.object({

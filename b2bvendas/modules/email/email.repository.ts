@@ -1,7 +1,7 @@
-import { prisma } from '@/src/lib/prisma';
+import { prisma } from '@/lib/prisma/client';
 import { EmailStatus, EmailLog } from '@prisma/client';
 import { EmailLogData } from './email.types';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // EMAIL REPOSITORY

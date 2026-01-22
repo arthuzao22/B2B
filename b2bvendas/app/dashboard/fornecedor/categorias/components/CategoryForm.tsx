@@ -1,7 +1,7 @@
 'use client'
 
 import { useState, useEffect } from 'react'
-import { CategoriaTree } from '@/src/modules/categorias/types'
+import { CategoriaTree } from '@/modules/categorias/types'
 
 interface CategoryFormProps {
   initialData?: CategoriaTree | null

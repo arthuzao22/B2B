@@ -1,6 +1,6 @@
 'use client'
 
-import { ProductForm } from '@/src/components/produtos'
+import { ProductForm } from '@/components/produtos'
 
 export default function NovoProdutoPage() {
   const handleSubmit = async (data: any) => {

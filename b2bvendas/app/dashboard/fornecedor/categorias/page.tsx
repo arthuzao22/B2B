@@ -1,7 +1,7 @@
 'use client'
 
 import { useEffect, useState } from 'react'
-import { CategoriaTree, CategoriaWithCount } from '@/src/modules/categorias/types'
+import { CategoriaTree, CategoriaWithCount } from '@/modules/categorias/types'
 import { CategoryTree } from './components/CategoryTree'
 import { CategoryForm } from './components/CategoryForm'
 import { CategoryCard } from './components/CategoryCard'

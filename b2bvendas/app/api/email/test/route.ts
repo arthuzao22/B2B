@@ -1,6 +1,6 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/modules/email';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // GET /api/email/test - Test email templates

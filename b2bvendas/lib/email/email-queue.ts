@@ -2,7 +2,7 @@ import { Queue, Worker, Job, QueueEvents } from 'bullmq';
 import IORedis from 'ioredis';
 import { SendEmailOptions } from '@/modules/email/email.types';
 import { emailService } from './email-service';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // REDIS CONNECTION

@@ -12,7 +12,7 @@ import {
   AuditResource,
   AuditSeverity,
 } from './audit.types';
-import logger from '@/lib/logger';
+import { logger } from '@/lib/logger';
 
 /**
  * Extract client info from request

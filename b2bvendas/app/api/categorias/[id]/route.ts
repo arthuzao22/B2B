@@ -1,7 +1,6 @@
 import { NextRequest } from 'next/server'
-import { requireRole } from '@/src/lib/auth'
-import { CategoriaController } from '@/src/modules/categorias/controller'
-import { Role } from '@prisma/client'
+import { requireRole } from '@/lib/auth/session'
+import { CategoriaController } from '@/modules/categorias/controller'
 
 const controller = new CategoriaController()
 
@@ -10,9 +9,9 @@ export async function GET(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await requireRole(Role.FORNECEDOR)
-    
-    if (!session.user.fornecedorId) {
+    const user = await requireRole(['fornecedor'])
+
+    if (!user.fornecedorId) {
       return Response.json(
         { error: 'Fornecedor ID não encontrado' },
         { status: 400 }
@@ -20,7 +19,7 @@ export async function GET(
     }
 
     const { id } = await params
-    return await controller.getById(id, session.user.fornecedorId)
+    return await controller.getById(id, user.fornecedorId)
   } catch (error) {
     if (error instanceof Error && error.message.includes('Unauthorized')) {
       return Response.json(
@@ -40,9 +39,9 @@ export async function PUT(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await requireRole(Role.FORNECEDOR)
-    
-    if (!session.user.fornecedorId) {
+    const user = await requireRole(['fornecedor'])
+
+    if (!user.fornecedorId) {
       return Response.json(
         { error: 'Fornecedor ID não encontrado' },
         { status: 400 }
@@ -50,7 +49,7 @@ export async function PUT(
     }
 
     const { id } = await params
-    return await controller.update(id, request, session.user.fornecedorId)
+    return await controller.update(id, request, user.fornecedorId)
   } catch (error) {
     if (error instanceof Error && error.message.includes('Unauthorized')) {
       return Response.json(
@@ -70,9 +69,9 @@ export async function DELETE(
   { params }: { params: Promise<{ id: string }> }
 ) {
   try {
-    const session = await requireRole(Role.FORNECEDOR)
-    
-    if (!session.user.fornecedorId) {
+    const user = await requireRole(['fornecedor'])
+
+    if (!user.fornecedorId) {
       return Response.json(
         { error: 'Fornecedor ID não encontrado' },
         { status: 400 }
@@ -80,7 +79,7 @@ export async function DELETE(
     }
 
     const { id } = await params
-    return await controller.delete(id, request, session.user.fornecedorId)
+    return await controller.delete(id, request, user.fornecedorId)
   } catch (error) {
     if (error instanceof Error && error.message.includes('Unauthorized')) {
       return Response.json(

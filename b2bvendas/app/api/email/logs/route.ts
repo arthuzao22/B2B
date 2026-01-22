@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailRepository } from '@/modules/email/email.repository';
 import { EmailStatus } from '@prisma/client';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // GET /api/email/logs - Get email logs

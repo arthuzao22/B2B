@@ -2,7 +2,7 @@ import * as React from 'react';
 import { Resend } from 'resend';
 import { render } from '@react-email/components';
 import { EmailResult, SendEmailOptions, EmailAddress } from '@/modules/email/email.types';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // Import email templates
 import WelcomeEmail from './templates/welcome';

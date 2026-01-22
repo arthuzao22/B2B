@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/modules/email/email.service';
 import { z } from 'zod';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // VALIDATION SCHEMAS

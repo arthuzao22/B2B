@@ -1,7 +1,7 @@
 'use client'
 
 import { useState } from 'react'
-import { CategoriaTree } from '@/src/modules/categorias/types'
+import { CategoriaTree } from '@/modules/categorias/types'
 import { ChevronDown, ChevronRight, Edit, Trash2, Plus, FolderOpen, Folder } from 'lucide-react'
 
 interface CategoryTreeProps {

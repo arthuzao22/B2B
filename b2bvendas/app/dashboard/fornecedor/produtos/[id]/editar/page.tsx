@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import { useParams } from 'next/navigation'
-import { ProductForm } from '@/src/components/produtos'
+import { ProductForm } from '@/components/produtos'
 
 interface Produto {
   id: string
@@ -31,7 +31,7 @@ export default function EditarProdutoPage() {
     const fetchProduto = async () => {
       try {
         const response = await fetch(`/api/produtos/${id}`)
-        
+
         if (!response.ok) {
           throw new Error('Erro ao carregar produto')
         }

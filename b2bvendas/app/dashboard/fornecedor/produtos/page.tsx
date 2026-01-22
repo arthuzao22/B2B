@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from 'react'
 import Link from 'next/link'
-import { ProductTable } from '@/src/components/produtos'
+import { ProductTable } from '@/components/produtos'
 
 interface Produto {
   id: string

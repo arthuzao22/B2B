@@ -13,7 +13,7 @@ import {
   PasswordResetEmailData,
   LowStockAlertEmailData,
 } from './email.types';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // EMAIL SERVICE WITH BUSINESS LOGIC

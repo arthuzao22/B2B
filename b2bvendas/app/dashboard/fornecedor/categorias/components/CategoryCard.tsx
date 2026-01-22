@@ -1,6 +1,6 @@
 'use client'
 
-import { CategoriaWithCount } from '@/src/modules/categorias/types'
+import { CategoriaWithCount } from '@/modules/categorias/types'
 import { Edit, Trash2, FolderOpen, Package } from 'lucide-react'
 
 interface CategoryCardProps {

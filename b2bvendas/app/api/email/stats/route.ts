@@ -1,7 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
 import { emailService } from '@/modules/email/email.service';
 import { getQueueStats } from '@/lib/email/email-queue';
-import logger from '@/src/lib/logger';
+import { logger } from '@/lib/logger';
 
 // ==========================================
 // GET /api/email/stats - Get email statistics

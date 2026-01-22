@@ -1,5 +1,5 @@
-import { BaseService } from '@/src/lib/base'
-import { generateSlug } from '@/src/lib/utils'
+import { BaseService } from '@/lib/base'
+import { generateSlug } from '@/lib/utils'
 import { Categoria } from '@prisma/client'
 import { CategoriaRepository } from './repository'
 import { CategoriaCreateInput, CategoriaUpdateInput, CategoriaTree, CategoriaWithCount, CategoryPath } from './types'

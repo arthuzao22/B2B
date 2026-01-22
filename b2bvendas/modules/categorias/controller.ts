@@ -1,5 +1,5 @@
 import { NextRequest, NextResponse } from 'next/server'
-import { BaseController } from '@/src/lib/base'
+import { BaseController } from '@/lib/base'
 import { CategoriaService } from './service'
 import { createCategoriaSchema, updateCategoriaSchema } from './validation'
 
