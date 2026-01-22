@@ -233,17 +233,23 @@ export default function CatalogoPage() {
             ) : (
               <>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                  {produtos.map((produto) => (
-                    <ProductCard
-                      key={produto.id}
-                      id={produto.id}
-                      nome={produto.nome}
-                      precoBase={Number(produto.precoBase)}
-                      imagens={produto.imagens}
-                      fornecedor={produto.fornecedor}
-                      ativo={produto.ativo}
-                    />
-                  ))}
+                  {produtos.map((produto) => {
+                    const precoBase = typeof produto.precoBase === 'number' 
+                      ? produto.precoBase 
+                      : parseFloat(String(produto.precoBase)) || 0;
+                    
+                    return (
+                      <ProductCard
+                        key={produto.id}
+                        id={produto.id}
+                        nome={produto.nome}
+                        precoBase={precoBase}
+                        imagens={produto.imagens}
+                        fornecedor={produto.fornecedor}
+                        ativo={produto.ativo}
+                      />
+                    );
+                  })}
                 </div>
 
                 {/* Pagination */}

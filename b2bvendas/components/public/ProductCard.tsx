@@ -3,6 +3,7 @@ import Link from 'next/link';
 import { Card, CardContent, CardFooter } from '@/components/ui/Card';
 import { Button } from '@/components/ui/Button';
 import { Package } from 'lucide-react';
+import { formatCurrency } from '@/lib/utils/helpers';
 
 interface ProductCardProps {
   id: string;
@@ -51,7 +52,7 @@ export function ProductCard({ id, nome, precoBase, imagens, fornecedor, ativo }:
           {nomeFornecedor}
         </p>
         <p className="text-2xl font-bold text-blue-600">
-          R$ {precoBase.toFixed(2)}
+          {formatCurrency(precoBase)}
         </p>
       </CardContent>
       
