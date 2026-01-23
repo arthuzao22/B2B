@@ -18,6 +18,7 @@ import {
   UserCog,
   Inbox,
   TrendingUp,
+  DollarSign,
 } from 'lucide-react';
 import { cn } from '@/lib/utils';
 
@@ -44,13 +45,14 @@ const menuItems: MenuConfig = {
     { label: 'Configurações', href: '/dashboard/configuracoes', icon: Settings },
   ],
   fornecedor: [
-    { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
-    { label: 'Meus Produtos', href: '/dashboard/produtos', icon: Package },
-    { label: 'Pedidos', href: '/dashboard/pedidos', icon: ShoppingCart },
-    { label: 'Catálogo', href: '/dashboard/catalogo', icon: Store },
-    { label: 'Relatórios', href: '/dashboard/relatorios', icon: TrendingUp },
-    { label: 'Minha Empresa', href: '/dashboard/empresa', icon: Building2 },
-    { label: 'Configurações', href: '/dashboard/configuracoes', icon: Settings },
+    { label: 'Dashboard', href: '/dashboard/fornecedor', icon: LayoutDashboard },
+    { label: 'Pedidos', href: '/dashboard/fornecedor/pedidos', icon: ShoppingCart },
+    { label: 'Clientes', href: '/dashboard/fornecedor/clientes', icon: Users },
+    { label: 'Produtos', href: '/dashboard/fornecedor/produtos', icon: Package },
+    { label: 'Categorias', href: '/dashboard/fornecedor/categorias', icon: Store },
+    { label: 'Estoque', href: '/dashboard/fornecedor/estoque', icon: FileText },
+    { label: 'Listas de Preços', href: '/dashboard/fornecedor/precos', icon: DollarSign },
+    { label: 'Configurações', href: '/dashboard/fornecedor/configuracoes', icon: Settings },
   ],
   cliente: [
     { label: 'Dashboard', href: '/dashboard', icon: LayoutDashboard },
