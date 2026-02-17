@@ -7,12 +7,9 @@ export default function AuthProvider({
 }: {
   children: React.ReactNode
 }) {
-  // Wrap children in a Fragment to ensure it's a single element
   return (
     <SessionProvider>
-      <>
-        {children}
-      </>
+      {children}
     </SessionProvider>
   )
 }
