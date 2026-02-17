@@ -8,19 +8,19 @@ export default withAuth(
 
     // Check role-based access
     if (pathname.startsWith('/dashboard/fornecedor')) {
-      if (token?.role !== 'FORNECEDOR' && token?.role !== 'ADMIN') {
+      if (token?.tipo !== 'fornecedor' && token?.tipo !== 'admin') {
         return NextResponse.redirect(new URL('/login', req.url))
       }
     }
 
     if (pathname.startsWith('/dashboard/cliente')) {
-      if (token?.role !== 'CLIENT' && token?.role !== 'ADMIN') {
+      if (token?.tipo !== 'cliente' && token?.tipo !== 'admin') {
         return NextResponse.redirect(new URL('/login', req.url))
       }
     }
 
-    if (pathname.startsWith('/admin')) {
-      if (token?.role !== 'ADMIN') {
+    if (pathname.startsWith('/dashboard/admin')) {
+      if (token?.tipo !== 'admin') {
         return NextResponse.redirect(new URL('/login', req.url))
       }
     }

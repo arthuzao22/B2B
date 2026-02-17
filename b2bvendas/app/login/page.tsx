@@ -1,13 +1,31 @@
 'use client'
 
 import { useState, useEffect, Suspense } from 'react'
-import { signIn } from 'next-auth/react'
+import { signIn, useSession } from 'next-auth/react'
 import { useRouter, useSearchParams } from 'next/navigation'
 import Link from 'next/link'
+import { Card, CardContent, CardDescription, CardFooter, CardHeader, CardTitle } from '@/components/ui/Card'
+import { Input } from '@/components/ui/Input'
+import { Button } from '@/components/ui/Button'
+import type { TipoUsuario } from '@prisma/client'
+
+function getRedirectPath(tipo: TipoUsuario): string {
+  switch (tipo) {
+    case 'admin':
+      return '/dashboard/admin'
+    case 'fornecedor':
+      return '/dashboard/fornecedor'
+    case 'cliente':
+      return '/dashboard/cliente'
+    default:
+      return '/dashboard'
+  }
+}
 
 function LoginForm() {
   const router = useRouter()
   const searchParams = useSearchParams()
+  const { data: session, status } = useSession()
   const [email, setEmail] = useState('')
   const [senha, setSenha] = useState('')
   const [error, setError] = useState('')
@@ -19,6 +37,14 @@ function LoginForm() {
       setSuccessMessage('Conta criada com sucesso! Faça login para continuar.')
     }
   }, [searchParams])
+
+  useEffect(() => {
+    if (status === 'authenticated' && session?.user?.tipo) {
+      const redirectPath = getRedirectPath(session.user.tipo)
+      router.push(redirectPath)
+      router.refresh()
+    }
+  }, [status, session, router])
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -35,102 +61,95 @@ function LoginForm() {
 
       if (result?.error) {
         setError(result.error)
-      } else if (result?.ok) {
-        router.push('/dashboard')
-        router.refresh()
+        setLoading(false)
       }
     } catch (err) {
       setError('Erro ao fazer login. Tente novamente.')
-    } finally {
       setLoading(false)
     }
   }
 
   return (
-    <form className="mt-8 space-y-6" onSubmit={handleSubmit}>
-      {successMessage && (
-        <div className="rounded-md bg-green-50 p-4">
-          <div className="text-sm text-green-800">{successMessage}</div>
-        </div>
-      )}
-      {error && (
-        <div className="rounded-md bg-red-50 p-4">
-          <div className="text-sm text-red-800">{error}</div>
-        </div>
-      )}
-      <div className="rounded-md shadow-sm -space-y-px">
-        <div>
-          <label htmlFor="email" className="sr-only">
-            Email
-          </label>
-          <input
-            id="email"
-            name="email"
+    <Card className="w-full max-w-md" variant="elevated">
+      <CardHeader className="space-y-1">
+        <CardTitle className="text-2xl font-bold text-center">Login</CardTitle>
+        <CardDescription className="text-center">
+          Entre com suas credenciais para acessar o sistema
+        </CardDescription>
+      </CardHeader>
+      <CardContent>
+        <form onSubmit={handleSubmit} className="space-y-4">
+          {successMessage && (
+            <div className="rounded-lg bg-green-50 dark:bg-green-900/20 p-4 border border-green-200 dark:border-green-800">
+              <p className="text-sm text-green-800 dark:text-green-200">{successMessage}</p>
+            </div>
+          )}
+          {error && (
+            <div className="rounded-lg bg-red-50 dark:bg-red-900/20 p-4 border border-red-200 dark:border-red-800">
+              <p className="text-sm text-red-800 dark:text-red-200">{error}</p>
+            </div>
+          )}
+
+          <Input
+            label="Email"
             type="email"
-            autoComplete="email"
             required
             value={email}
             onChange={(e) => setEmail(e.target.value)}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Email"
+            placeholder="seu@email.com"
+            autoComplete="email"
           />
-        </div>
-        <div>
-          <label htmlFor="senha" className="sr-only">
-            Senha
-          </label>
-          <input
-            id="senha"
-            name="senha"
+
+          <Input
+            label="Senha"
             type="password"
-            autoComplete="current-password"
             required
             value={senha}
             onChange={(e) => setSenha(e.target.value)}
-            className="appearance-none rounded-none relative block w-full px-3 py-2 border border-gray-300 placeholder-gray-500 text-gray-900 rounded-b-md focus:outline-none focus:ring-blue-500 focus:border-blue-500 focus:z-10 sm:text-sm"
-            placeholder="Senha"
+            placeholder="Digite sua senha"
+            autoComplete="current-password"
           />
-        </div>
-      </div>
 
-      <div>
-        <button
-          type="submit"
-          disabled={loading}
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-md text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:bg-gray-400 disabled:cursor-not-allowed"
-        >
-          {loading ? 'Entrando...' : 'Entrar'}
-        </button>
-      </div>
-
-      <div className="text-center">
-        <Link
-          href="/register"
-          className="font-medium text-blue-600 hover:text-blue-500"
-        >
-          Não tem uma conta? Cadastre-se
-        </Link>
-      </div>
-    </form>
+          <Button
+            type="submit"
+            variant="primary"
+            size="lg"
+            loading={loading}
+            className="w-full"
+          >
+            Entrar
+          </Button>
+        </form>
+      </CardContent>
+      <CardFooter className="flex justify-center">
+        <p className="text-sm text-gray-600 dark:text-gray-400">
+          Não tem uma conta?{' '}
+          <Link
+            href="/register"
+            className="font-medium text-blue-600 hover:text-blue-500 dark:text-blue-400 dark:hover:text-blue-300"
+          >
+            Cadastre-se
+          </Link>
+        </p>
+      </CardFooter>
+    </Card>
   )
 }
 
 export default function LoginPage() {
   return (
-    <div className="min-h-screen flex items-center justify-center bg-gray-50 py-12 px-4 sm:px-6 lg:px-8">
-      <div className="max-w-md w-full space-y-8">
-        <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-gray-900">
-            Login
-          </h2>
-          <p className="mt-2 text-center text-sm text-gray-600">
-            Entre com suas credenciais para acessar o sistema
-          </p>
-        </div>
-        <Suspense fallback={<div>Carregando...</div>}>
-          <LoginForm />
-        </Suspense>
-      </div>
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-blue-50 to-indigo-100 dark:from-gray-900 dark:to-gray-800 py-12 px-4 sm:px-6 lg:px-8">
+      <Suspense fallback={
+        <Card className="w-full max-w-md" variant="elevated">
+          <CardContent className="p-8">
+            <div className="flex justify-center">
+              <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600"></div>
+            </div>
+          </CardContent>
+        </Card>
+      }>
+        <LoginForm />
+      </Suspense>
     </div>
   )
 }
